@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>{{ title }}</title>
+</head>
+
+<body>
+    <h2>Sales Funnel Report - National</h2>
+    <table border="1" cellspacing="0" cellpadding="1">
+
+        <tr  style="text-align: center; background-color:#bbbbbb">
+
+            <th>Ticket</th>
+
+            <th>Open Time</th>
+
+            <th>Type</th>
+
+            <th>Size</th>
+
+            <th>Item</th>
+
+            <th>Open Price</th>
+
+            <th>S/L</th>
+
+            <th>T/P</th>
+
+            <th>Close Time</th>
+
+            <th>Close Price</th>
+
+            <th>Commission</th>
+
+            <th>Swap</th>
+
+            <th>Trade P/L</th>
+
+        </tr>
+        {% if table is none %}
+            <tr style="background-color: #ffffff">
+                <td colspan="13" style="text-align: center;">No transaction</td>
+            </tr>
+        {% else %}
+        {% set ns = namespace() %}
+        {% set ns.bgcolor = "#ffffff" %}
+
+        {% for k, v in table.items() %}
+            {% if v["type"] in ["balance", "credit"]%}
+            <tr style="background-color: {{ ns.bgcolor }}">
+                <td>{{ v["ticket"] }}</td>
+                <td>{{ v["open_time"] }}</td>
+                <td style="text-align: center;">{{ v["type"] }}</td>
+                <td style="text-align: left;" colspan="9">{{ v["COMMENT"] }}</td>
+                <td style="text-align: right">{{ v["tradepl"] }}</td>
+            </tr>
+            {% else %}
+                {% if v["type"] in ["buy limit", "sell limit", "buy stop", "sell stop"] %}
+                    <tr style="background-color: {{ ns.bgcolor }}">
+                        <td>{{ v["ticket"] }}</td>
+                        <td>{{ v["open_time"] }}</td>
+                        <td style="text-align: center;">{{ v["type"] }}</td>
+                        <td style="text-align: center;">{{ v["size"] }}</td>
+                        <td>{{ v["item"] }}</td>
+                        <td style="text-align: right">{{ v["open_price"] }}</td>
+                        <td style="text-align: right">{{ v["sl"] }}</td>
+                        <td style="text-align: right">{{ v["tp"] }}</td>
+                        <td colspan="4">&nbsp;</td>
+                        <td style="text-align: right">{{ v["COMMENT"] }}</td>
+                    </tr>
+                {% else %}
+                    <tr style="background-color: {{ ns.bgcolor }};">
+                        <td>{{ v["ticket"] }}</td>
+                        <td>{{ v["open_time"] }}</td>
+                        <td style="text-align: center;">{{ v["type"] }}</td>
+                        <td style="text-align: center;">{{ size }}</td>
+                        <td>{{ v["item"] }}</td>
+                        <td style="text-align: right">{{ v["open_price"] }}</td>
+                        <td style="text-align: right">{{ v["sl"] }}</td>
+                        <td style="text-align: right">{{ v["tp"] }}</td>
+                        <td>{{ v["close_time"] }}</td>
+                        <td style="text-align: right">{{ v["close_price"] }}</td>
+                        <td style="text-align: right">{{ v["commission"] }}</td>
+                        <td style="text-align: right">{{ v["swap"] }}</td>
+                        <td style="text-align: right">{{ v["tradepl"] }}</td>
+                    </tr>
+                {% endif %}
+            {% endif %}
+            {% if ns.bgcolor == "#ffffff" %}
+                {% set ns.bgcolor = "#dfdfdf" %}
+            {% else %}
+                {% set ns.bgcolor = "#ffffff"%}
+            {% endif %}
+        {% endfor %}
+        <tr style="background-color:#bbbbbb">
+            <td colspan="10">&nbsp;</td>
+            <td style="text-align: right">{{ comm }}</td>
+            <td style="text-align: right">{{ swap }}</td>
+            <td style="text-align: right">{{ tradepl }}</td>
+        </tr>
+        {% endif %}
+    </table>
+</body>
+
+</html>
